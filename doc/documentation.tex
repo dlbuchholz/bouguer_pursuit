@@ -1,0 +1,1082 @@
+\documentclass[10pt]{extarticle}
+
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{framed}
+\usepackage[normalem]{ulem}
+\usepackage{indentfirst}
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{mathtools} % Wraparound amsmath. For fancy math typesetting
+\usepackage[nointegrals]{wasysym} % nointegrals prevents wasysym from overwriting integral symbols from LaTeX and amsmath
+\usepackage{bbm} % For extended bold and blackboard bold characters
+\usepackage[italicdiff]{physics} % italicdiff causes derivatives to be rendered with italic d's instead of upright d's
+\usepackage[T1]{fontenc}
+\usepackage{xparse}
+\usepackage{xstring}
+% \usepackage{pifont} % For unusual symbols
+% \usepackage{mathdots} % For unusual combinations of dots
+\usepackage{wrapfig}
+\usepackage{lmodern,mathrsfs}
+\usepackage[inline,shortlabels]{enumitem}
+\setlist{topsep=2pt,itemsep=2pt,parsep=0pt,partopsep=0pt}
+\usepackage[table,dvipsnames]{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage{csquotes} % Must be loaded AFTER inputenc
+\usepackage[a4paper,top=0.5in,bottom=0.2in,left=0.5in,right=0.5in,footskip=0.3in,includefoot]{geometry}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz,tikz-3dplot,tikz-cd,tkz-tab,tkz-euclide,pgf,pgfplots}
+\usepackage[euler]{textgreek}
+\pgfplotsset{compat=newest}
+% \usepackage{comment} % For commenting large blocks of text and math efficiently
+% \usepackage{fancyvrb} % For custom verbatim environments
+\usepackage{multicol}
+\usepackage[bottom,multiple]{footmisc} % Ensures footnotes are at the bottom of the page, and separates footnotes by a comma if they are adjacent
+\usepackage[backend=bibtex,style=numeric]{biblatex}
+\renewcommand*{\finalnamedelim}{\addcomma\addspace} % Forces authors' names to be separated by comma, instead of "and"
+\addbibresource{bibliography}
+\usepackage[colorlinks,linkcolor=.,citecolor=blue,urlcolor=violet]{hyperref}
+\usepackage[nameinlink]{cleveref} % nameinlink ensures that the entire element is clickable in the pdf, not just the number
+
+\newcommand{\remind}[1]{\textcolor{red}{\textbf{#1}}} % To remind me of unfinished work to fix later
+\newcommand{\hide}[1]{} % To hide large blocks of code without using % symbols
+
+% Same as \href, but the text appears in typewriter font and in a custom color
+\newcommand{\Href}[3][red!50!black]{\href{#2}{\textcolor{#1}{\texttt{#3}}}}
+
+\newcommand{\ep}{\varepsilon}
+\newcommand{\vp}{\varphi}
+\newcommand{\lam}{\lambda}
+\newcommand{\Lam}{\Lambda}
+\DeclareDocumentCommand\ip{ l m }{\braces#1{\langle}{\rangle}{#2}} % Inner product ⟨x,y⟩ (but only one argument is taken, so \ip{x,y} renders as ⟨x,y⟩)
+\DeclareDocumentCommand\floor{ l m }{\braces#1{\lfloor}{\rfloor}{#2}} % Floor function ⌊x⌋
+\DeclareDocumentCommand\ceil{ l m }{\braces#1{\lceil}{\rceil}{#2}} % Ceiling function ⌈x⌉
+
+% Shortcuts for blackboard bold letters, e.g. \A outputs \mathbb{A}
+\def\do#1{\csdef{#1}{\mathbb{#1}}}
+\docsvlist{A,B,C,D,E,F,G,I,J,K,M,N,Q,R,T,U,V,W,X,Y,Z}
+% \H is already defined as a 1-argument command, it places a double acute accent (hungarumlaut) on a character, e.g. \H{o} yields ő
+% \L is already defined as the uppercase Ł (L with stroke)
+% \O is already defined as the uppercase Ø (O with stroke)
+% \P is already defined as the pilcrow ¶ (paragraph mark)
+% \S is already defined as the section sign §
+
+% Shortcuts for calligraphic letters, e.g. \As outputs \mathcal{A}
+\def\do#1{\csdef{#1s}{\mathcal{#1}}}
+\docsvlist{A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z}
+
+% Shortcuts for letters with a bar on top, e.g. \Abar outputs \overline{A}
+\def\do#1{\csdef{#1bar}{\overline{#1}}}
+\docsvlist{a,b,c,d,e,f,g,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z}
+% \hbar is already defined as the symbol ℏ (reduced Planck constant)
+
+% Shortcuts for boldface letters, e.g. \Ab outputs \textbf{A}
+\def\do#1{\csdef{#1b}{\textbf{#1}}}
+\docsvlist{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,q,r,t,u,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z}
+% \pb is already defined (by the physics package) as a 2-argument command, denoting the anticommutator or Poisson bracket, e.g. \pb{A,B} yields {A,B}
+% \sb is already defined in the LaTeX kernel. This is a fundamental LaTeX command, DO NOT overwrite it!
+% \vb is already defined (by the physics package) as a 1-argument command, for boldface text, e.g. \vb{A} yields \textbf{A}
+
+% Shortcuts for letters with a tilde on top, e.g. \Atil outputs \widetilde{A}
+\def\do#1{\csdef{#1til}{\widetilde{#1}}}
+\docsvlist{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z}
+
+\newcommand{\tm}{^{\mathsf{T}}}     % Transpose
+\newcommand{\hm}{^{\mathsf{H}}}     % Conjugate transpose (Hermitian conjugate)
+\newcommand{\itm}{^{-\mathsf{T}}}   % Inverse transpose
+\newcommand{\ihm}{^{-\mathsf{H}}}   % Inverse conjugate transpose (Inverse Hermitian conjugate)
+\newcommand{\ex}{\textbf{e}_x}
+\newcommand{\ey}{\textbf{e}_y}
+\newcommand{\ez}{\textbf{e}_z}
+\newcommand{\Aint}{A^\circ}
+\newcommand{\Bint}{B^\circ}
+\newcommand{\limk}{\lim_{k\to\infty}}
+\newcommand{\limm}{\lim_{m\to\infty}}
+\newcommand{\limn}{\lim_{n\to\infty}}
+\newcommand{\limx}[1][a]{\lim_{x\to#1}}
+\newcommand{\limz}[1][{z_0}]{\lim_{z\to#1}}
+\newcommand{\liminfm}{\liminf_{m\to\infty}}
+\newcommand{\limsupm}{\limsup_{m\to\infty}}
+\newcommand{\liminfn}{\liminf_{n\to\infty}}
+\newcommand{\limsupn}{\limsup_{n\to\infty}}
+\newcommand{\sumkn}{\sum_{k=1}^n}
+\newcommand{\sumk}[1][1]{\sum_{k=#1}^\infty}
+\newcommand{\summ}[1][1]{\sum_{m=#1}^\infty}
+\newcommand{\sumn}[1][1]{\sum_{n=#1}^\infty}
+\newcommand{\emp}{\varnothing}
+\newcommand{\exc}{\backslash}
+\newcommand{\sub}{\subseteq}
+\newcommand{\sups}{\supseteq}
+\newcommand{\capp}{\bigcap}
+\newcommand{\cupp}{\bigcup}
+\newcommand{\kupp}{\bigsqcup}
+\newcommand{\cappkn}{\bigcap_{k=1}^n}
+\newcommand{\cuppkn}{\bigcup_{k=1}^n}
+\newcommand{\kuppkn}{\bigsqcup_{k=1}^n}
+\newcommand{\cappk}[1][1]{\bigcap_{k=#1}^\infty}
+\newcommand{\cuppk}[1][1]{\bigcup_{k=#1}^\infty}
+\newcommand{\cappm}[1][1]{\bigcap_{m=#1}^\infty}
+\newcommand{\cuppm}[1][1]{\bigcup_{m=#1}^\infty}
+\newcommand{\cappn}[1][1]{\bigcap_{n=#1}^\infty}
+\newcommand{\cuppn}[1][1]{\bigcup_{n=#1}^\infty}
+\newcommand{\kuppk}[1][1]{\bigsqcup_{k=#1}^\infty}
+\newcommand{\kuppm}[1][1]{\bigsqcup_{m=#1}^\infty}
+\newcommand{\kuppn}[1][1]{\bigsqcup_{n=#1}^\infty}
+\newcommand{\cappa}{\bigcap_{\alpha\in I}}
+\newcommand{\cuppa}{\bigcup_{\alpha\in I}}
+\newcommand{\kuppa}{\bigsqcup_{\alpha\in I}}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dt}{\,dt}
+\newcommand{\dmu}{\,d\mu}
+\newcommand{\dnu}{\,d\nu}
+\DeclareMathOperator{\glb}{\text{glb}}
+\DeclareMathOperator{\lub}{\text{lub}}
+\newcommand{\xh}{\widehat{x}}
+\newcommand{\yh}{\widehat{y}}
+\newcommand{\zh}{\widehat{z}}
+\newcommand{\<}{\langle}
+\renewcommand{\>}{\rangle}
+
+% Shortcuts for inverse hyperbolic functions (and other operators with the same structure)
+\def\do#1{\csdef{#1}{\trigbraces{\operatorname{#1}}}}
+\docsvlist{
+    asinh,acosh,atanh,acoth,asech,acsch,
+    arsinh,arcosh,artanh,arcoth,arsech,arcsch,
+    arcsinh,arccosh,arctanh,arccoth,arcsech,arccsch,
+    sen,tg,cth,senh,tgh,ctgh,
+    Re,Im,arg,Arg,im,ker
+}
+
+% \spn has to be defined separately as the syntax "spn" is different from the output "span"
+% \span is already defined in the LaTeX kernel. This is a fundamental LaTeX command, DO NOT overwrite it!
+\newcommand{\spn}{\trigbraces{\operatorname{span}}}
+
+\makeatletter
+% Redefining the commands \iff (given by LaTeX), \implies and \impliedby (given by amsmath)
+% Math mode is automatically enforced, starred version makes the arrows shorter
+\renewcommand{\impliedby}{\@ifstar{\ensuremath{\Longleftarrow}}{\ensuremath{\Leftarrow}}} % Corresponding Unicode character: U+21D0 ⇐
+\renewcommand{\implies}{\@ifstar{\ensuremath{\Longrightarrow}}{\ensuremath{\Rightarrow}}} % Corresponding Unicode character: U+21D2 ⇒
+\renewcommand{\iff}{\@ifstar{\ensuremath{\Longleftrightarrow}}{\ensuremath{\Leftrightarrow}}} % Corresponding Unicode character: U+21D4 ⇔
+\makeatother
+
+\newtheoremstyle{mystyle}{}{}{}{}{\sffamily\bfseries}{.}{ }{}
+\makeatletter
+\renewenvironment{proof}[1][\proofname] {\par\pushQED{\qed}{\normalfont\sffamily\bfseries\topsep6\p@\@plus6\p@\relax #1\@addpunct{.} }}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+\renewcommand{\qedsymbol}{\coolqed{0.32}} % Implements the new QED symbol
+\theoremstyle{mystyle}{\newtheorem*{remark}{Remark}}
+\theoremstyle{mystyle}{\newtheorem*{remarks}{Remarks}}
+\theoremstyle{mystyle}{\newtheorem*{example}{Example}}
+\theoremstyle{mystyle}{\newtheorem*{examples}{Examples}}
+\theoremstyle{definition}{\newtheorem*{exercise}{Exercise}}
+
+% Warning environment
+\newtheoremstyle{warn}{}{}{}{}{\normalfont}{}{ }{}
+\theoremstyle{warn}
+\newtheorem*{warning}{\warningsign{0.2}\relax}
+
+% Symbol for the warning environment, designed to be easily scalable
+\newcommand{\warningsign}[1]{
+    \tikz[scale=#1,every node/.style={transform shape}]{
+        \draw[-,line width={#1*0.8mm},red,fill=yellow,rounded corners={#1*2.5mm}] (0,0)--(1,{-sqrt(3)})--(-1,{-sqrt(3)})--cycle;
+        \node at (0,-1) {\fontsize{48}{60}\selectfont\bfseries!};
+}}
+
+% \newcommand{\coolqed}[1]{\includegraphics[width=#1cm]{sunglasses_emoji.png}} % QED symbol
+
+\newcommand{\coolqed}[1]{QED} % QED symbol
+
+% verbbox environment, for showing verbatim text next to code output (for package documentation and user learning purposes)
+\NewTCBListing{verbbox}{ !O{} }{boxrule=1pt,sidebyside,skin=bicolor,colback=gray!10,colbacklower=white,valign=center,top=2pt,bottom=2pt,left=2pt,right=2pt,#1} % Last argument allows more tcolorbox options to be added
+\newtcolorbox{twoboxes}{
+    sidebyside,
+    skin=bicolor,
+    boxrule=1pt,
+    colback=gray!10,
+    colbacklower=white,
+    valign=center,
+    top=2pt,
+    bottom=2pt,
+    left=2pt,
+    right=2pt,
+}
+
+\NewDocumentCommand{\solidball}{ s O{} m O{white} m }{
+\tikz[scale=#5,every node/.style={transform shape}]{
+    \shade[ball color=#3] (0,0) circle (0.5); %solid ball with no label
+    \IfBooleanF{#1}{
+        \clip (0,0) circle (0.25);
+        \shade[ball color=#4] (0,0) circle (0.5);
+    }
+    \node[font=\sffamily\bfseries\selectfont] at (0,0) {#2}; % Label
+}
+}
+
+\NewDocumentCommand{\stripedball}{ s O{} m O{white} m }{
+\tikz[scale=#5,every node/.style={transform shape}]{
+    \shade[ball color=#4] (0,0) circle (0.5);
+    \clip (-0.5,-0.35) rectangle (0.5,0.35);
+    \shade[ball color=#3] (0,0) circle (0.5);
+    \IfBooleanF{#1}{
+        \clip (0,0) circle (0.25);
+        \shade[ball color=#4] (0,0) circle (0.5);
+    }
+    \node[font=\sffamily\bfseries\selectfont] at (0,0) {#2}; % Label
+}
+}
+
+% Official colors for Aramith Tournament pool balls
+% Colors taken from https://www.aramith.com/story-behind-aramith-tournament-black-colours
+\definecolor{aramith_color_0}{HTML}{FFFFDF} % Cue ball and secondary color for all balls
+\definecolor{aramith_color_1}{HTML}{FFD501} % 1 and 9
+\definecolor{aramith_color_2}{HTML}{013CB1} % 2 and 10
+\definecolor{aramith_color_3}{HTML}{E71C01} % 3 and 11
+\definecolor{aramith_color_4}{HTML}{4F029C} % 4 and 12
+\definecolor{aramith_color_5}{HTML}{FA4D00} % 5 and 13
+\definecolor{aramith_color_6}{HTML}{0E5D01} % 6 and 14
+\definecolor{aramith_color_7}{HTML}{6D071A} % 7 and 15
+\definecolor{aramith_color_8}{HTML}{000000} % 8 (black)
+
+
+\makeatletter
+% Adapted from https://tex.stackexchange.com/a/61600
+\csdef{aramith_pool_ball@0}#1{\solidball*{aramith_color_0}{#1}}                         % Cue ball
+\csdef{aramith_pool_ball@1}#1{\solidball[1]{aramith_color_1}[aramith_color_0]{#1}}      % Ball 1
+\csdef{aramith_pool_ball@2}#1{\solidball[2]{aramith_color_2}[aramith_color_0]{#1}}      % Ball 2
+\csdef{aramith_pool_ball@3}#1{\solidball[3]{aramith_color_3}[aramith_color_0]{#1}}      % Ball 3
+\csdef{aramith_pool_ball@4}#1{\solidball[4]{aramith_color_4}[aramith_color_0]{#1}}      % Ball 4
+\csdef{aramith_pool_ball@5}#1{\solidball[5]{aramith_color_5}[aramith_color_0]{#1}}      % Ball 5
+\csdef{aramith_pool_ball@6}#1{\solidball[6]{aramith_color_6}[aramith_color_0]{#1}}      % Ball 6
+\csdef{aramith_pool_ball@7}#1{\solidball[7]{aramith_color_7}[aramith_color_0]{#1}}      % Ball 7
+\csdef{aramith_pool_ball@8}#1{\solidball[8]{aramith_color_8}[aramith_color_0]{#1}}      % Ball 8 (black)
+\csdef{aramith_pool_ball@9}#1{\stripedball[9]{aramith_color_1}[aramith_color_0]{#1}}    % Ball 9
+\csdef{aramith_pool_ball@10}#1{\stripedball[10]{aramith_color_2}[aramith_color_0]{#1}}  % Ball 10
+\csdef{aramith_pool_ball@11}#1{\stripedball[11]{aramith_color_3}[aramith_color_0]{#1}}  % Ball 11
+\csdef{aramith_pool_ball@12}#1{\stripedball[12]{aramith_color_4}[aramith_color_0]{#1}}  % Ball 12
+\csdef{aramith_pool_ball@13}#1{\stripedball[13]{aramith_color_5}[aramith_color_0]{#1}}  % Ball 13
+\csdef{aramith_pool_ball@14}#1{\stripedball[14]{aramith_color_6}[aramith_color_0]{#1}}  % Ball 14
+\csdef{aramith_pool_ball@15}#1{\stripedball[15]{aramith_color_7}[aramith_color_0]{#1}}  % Ball 15
+\NewDocumentCommand{\poolball}{ o m m }{
+    \pgfmathparse{Mod(#2,16)} % Argument #2 mod 16  as a floating-point number, e.g. 4.0
+    \pgfmathtruncatemacro{\argumentmodulosixteen}{\pgfmathresult} % Convert to integer, e.g. 4.0 to 4
+    \ifnum\argumentmodulosixteen=0
+        \solidball*{aramith_color_0}{#3}
+    \else
+        \ifnum\argumentmodulosixteen<9
+            \solidball[\IfNoValueTF{#1}{#2}{#1}]{aramith_color_\argumentmodulosixteen}[aramith_color_0]{#3} % Solid ball of the appropriate color, and the appropriate number (if the optional argument is not specified), otherwise the optional argument
+        \else
+            \pgfmathparse{\argumentmodulosixteen-8} % Argument #2 mod 8  as a floating-point number, e.g. 3.0 (this will only be computed if #2≥9)
+            \pgfmathtruncatemacro{\argumentmoduloeight}{\pgfmathresult} % Convert to integer, e.g. 3.0 to 3
+            \stripedball[\IfNoValueTF{#1}{#2}{#1}]{aramith_color_\argumentmoduloeight}[aramith_color_0]{#3} % Striped ball of the appropriate color, and the appropriate number (if the optional argument is not specified), otherwise the optional argument
+        \fi
+    \fi}
+\makeatother
+
+\makeatletter
+% \fsize stores the current font size but is expandable (and can be called later without using \makeatletter and \makeatother)
+\def\fsize{\dimexpr\f@size pt\relax}
+\makeatother
+
+\makeatletter
+% Adapted from https://tex.stackexchange.com/a/19700
+\def\my@vector #1,#2\@eolst{
+    \ifx\relax#2\relax
+        #1
+    \else
+        #1\my@delim
+        \my@vector #2\@eolst
+    \fi}
+\newcommand\vcstring[2][\\]{% Converts comma-separated string to #1-separated string
+    \def\my@delim{#1}
+        \my@vector #2,\relax\noexpand\@eolst}
+\newcommand\cvc[2][p]{% Converts comma-separated string to column vector, optional argument defines matrix brackets
+    \def\my@delim{\\}
+        \begin{#1matrix} % Empty argument also possible
+            \my@vector #2,\relax\noexpand\@eolst
+        \end{#1matrix}}
+\newcommand\rvc[2][p]{% Converts comma-separated string to row vector, optional argument defines matrix brackets
+    \def\my@delim{&}
+        \begin{#1matrix} % Empty argument also possible
+            \my@vector #2,\relax\noexpand\@eolst
+        \end{#1matrix}}
+% Matrix environment with variable number of arguments. Adapted from https://davidyat.es/2016/07/27/writing-a-latex-macro-that-takes-a-variable-number-of-arguments/
+\newcommand{\mat}[2][p]{
+    \def\matrixenvironment{#1matrix} % Specifying the matrix brackets, this has to be done beforehand as '#1' changes under \passtonextarg
+    \def\my@delim{&}
+        \begin{\matrixenvironment} % Begin matrix environment
+            \my@vector #2,\relax\noexpand\@eolst
+            \@ifnextchar\bgroup{\passtonextarg}{\end{\matrixenvironment}}% % Pass to next argument (if any), otherwise end matrix environment
+}
+\newcommand{\passtonextarg}[1]{\\ \my@vector #1,\relax\noexpand\@eolst
+    \@ifnextchar\bgroup{\passtonextarg}{\end{\matrixenvironment}}% Passing to next argument
+}
+\makeatother
+
+\definecolor{mGreen}{rgb}{0,0.6,0}
+\definecolor{mGray}{rgb}{0.5,0.5,0.5}
+\definecolor{mPurple}{rgb}{0.58,0,0.82}
+\definecolor{backgroundColour}{rgb}{0.95,0.95,0.92}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\definecolor{mGreen}{rgb}{0,0.6,0}
+\definecolor{mGray}{rgb}{0.5,0.5,0.5}
+\definecolor{mPurple}{rgb}{0.58,0,0.82}
+
+\lstdefinestyle{CStyle}{
+commentstyle=\color{mGreen},
+keywordstyle=\color{magenta},
+numberstyle=\tiny\color{mGray},
+stringstyle=\color{mPurple},
+basicstyle=\footnotesize,
+breakatwhitespace=false,
+breaklines=true,
+captionpos=b,
+keepspaces=true,
+numbers=none,
+numbersep=5pt,
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+tabsize=2,
+language=Python,
+frame=none
+}
+
+
+\lstset{style=CStyle}
+
+\definecolor{tcol_DEF}{HTML}{E40125} % Color for Definition
+\definecolor{tcol_PRP}{HTML}{EB8407} % Color for Proposition
+\definecolor{tcol_LEM}{HTML}{05C4D9} % Color for Lemma
+\definecolor{tcol_THM}{HTML}{1346E4} % Color for Theorem
+\definecolor{tcol_COR}{HTML}{7904C2} % Color for Corollary
+\definecolor{tcol_REM}{HTML}{18B640} % Color for Remark
+\definecolor{tcol_PRF}{HTML}{5A76B2} % Color for Proof
+\definecolor{tcol_EXA}{HTML}{21340A} % Color for Example
+
+\tcbset{
+tbox_DEF_style/.style={enhanced jigsaw,
+    colback=tcol_DEF!10,colframe=tcol_DEF!80!black,,
+    fonttitle=\sffamily\bfseries,
+    separator sign=.,label separator={},
+    sharp corners,top=2pt,bottom=2pt,left=2pt,right=2pt,
+    before skip=10pt,after skip=10pt,breakable
+},
+tbox_PRP_style/.style={enhanced jigsaw,
+    colback=tcol_PRP!10,colframe=tcol_PRP!80!black,
+    fonttitle=\sffamily\bfseries,
+    attach boxed title to top left={yshift=-\tcboxedtitleheight},
+    boxed title style={
+        boxrule=0pt,boxsep=2.5pt,
+        colback=tcol_PRP!80!black,colframe=tcol_PRP!80!black,
+        sharp corners=uphill
+    },
+    separator sign=.,label separator={},
+    top=\tcboxedtitleheight,bottom=2pt,left=2pt,right=2pt,
+    before skip=10pt,after skip=10pt,drop fuzzy shadow,breakable
+},
+tbox_THM_style/.style={enhanced jigsaw,
+    colback=tcol_THM!10,colframe=tcol_THM!80!black,
+    fonttitle=\sffamily\bfseries,coltitle=black,
+    attach boxed title to top left={xshift=10pt,yshift=-\tcboxedtitleheight/2},
+    boxed title style={
+        colback=tcol_THM!10,colframe=tcol_THM!80!black,height=16pt,bean arc
+    },
+    separator sign=.,label separator={},
+    sharp corners,top=6pt,bottom=2pt,left=2pt,right=2pt,
+    before skip=10pt,after skip=10pt,breakable
+},
+tbox_LEM_style/.style={enhanced jigsaw,
+    colback=tcol_LEM!10,colframe=tcol_LEM!80!black,
+    boxrule=0pt,
+    fonttitle=\sffamily\bfseries,
+    attach boxed title to top left={yshift=-\tcboxedtitleheight},
+    boxed title style={
+        boxrule=0pt,boxsep=2pt,
+        colback=tcol_LEM!80!black,colframe=tcol_LEM!80!black,
+        interior code={\fill[tcol_LEM!80!black] (interior.north west)--(interior.south west)--([xshift=-2mm]interior.south east)--([xshift=2mm]interior.north east)--cycle;
+    }},
+    separator sign=.,label separator={},
+    frame hidden,borderline north={1pt}{0pt}{tcol_LEM!80!black},
+    before upper={\hspace{\tcboxedtitlewidth}},
+    sharp corners,top=2pt,bottom=2pt,left=5pt,right=5pt,
+    before skip=10pt,after skip=10pt,breakable
+},
+tbox_COR_style/.style={enhanced jigsaw,
+    colback=tcol_COR!10,colframe=tcol_COR!80!black,
+    boxrule=0pt,
+    fonttitle=\sffamily\bfseries,coltitle=black,
+    separator sign={},label separator={},
+    description font=\normalfont\sffamily,
+    description delimiters={(}{)},
+    attach title to upper,after title={.\ },
+    frame hidden,borderline west={2pt}{0pt}{tcol_COR},
+    sharp corners,top=2pt,bottom=2pt,left=5pt,right=5pt,
+    before skip=10pt,after skip=10pt,breakable
+},
+}
+
+\newtcbtheorem[number within=section,
+    crefname={\color{tcol_DEF!50!black} definition}{\color{tcol_DEF!50!black} definitions},
+    Crefname={\color{tcol_DEF!50!black} Definition}{\color{tcol_DEF!50!black} Definitions}
+    ]{definition}{Definition}{tbox_DEF_style}{}
+\newtcbtheorem[use counter from=definition,
+    crefname={\color{tcol_PRP!50!black} proposition}{\color{tcol_PRP!50!black} propositions},
+    Crefname={\color{tcol_PRP!50!black} Proposition}{\color{tcol_PRP!50!black} Propositions}
+    ]{proposition}{Beispiel}{tbox_PRP_style}{}
+\newtcbtheorem[use counter from=definition,
+    crefname={\color{tcol_THM!50!black} theorem}{\color{tcol_THM!50!black} theorems},
+    Crefname={\color{tcol_THM!50!black} Theorem}{\color{tcol_THM!50!black} Theorems}
+    ]{theorem}{Theorem}{tbox_THM_style}{}
+\newtcbtheorem[use counter from=definition,
+    crefname={\color{tcol_LEM!50!black}}{\color{tcol_LEM!50!black}},
+    Crefname={\color{tcol_LEM!50!black}}{\color{tcol_LEM!50!black}}
+    ]{lemma}{Mathematisches Beispiel}{tbox_LEM_style}{}
+\newtcbtheorem[use counter from=definition,
+    crefname={\color{tcol_COR!50!black} corollary}{\color{tcol_COR!50!black} corollaries},
+    Crefname={\color{tcol_COR!50!black} Corollary}{\color{tcol_COR!50!black} Corollaries}
+    ]{corollary}{Corollary}{tbox_COR_style}{}
+
+\makeatletter
+\@namedef{tcolorboxshape@filingbox@ul}#1#2#3{
+    (frame.south west)--(title.north west)--([xshift=-\dimexpr#1\relax]title.north east) to[out=0,in=180] ([xshift=\dimexpr#2\relax,yshift=\dimexpr#3\relax]title.south east)--(frame.north east)--(frame.south east)--cycle
+}
+\@namedef{tcolorboxshape@filingbox@uc}#1#2#3{
+    (frame.south west)--(frame.north west)--([xshift=-\dimexpr#2\relax,yshift=\dimexpr#3\relax]title.south west) to[out=0,in=180] ([xshift=\dimexpr#1\relax]title.north west)--([xshift=-\dimexpr#1\relax]title.north east) to[out=0,in=180] ([xshift=\dimexpr#2\relax,yshift=\dimexpr#3\relax]title.south east)--(frame.north east)--(frame.south east)--cycle
+}
+\@namedef{tcolorboxshape@filingbox@ur}#1#2#3{
+    (frame.south east)--(title.north east)--([xshift=\dimexpr#1\relax]title.north west) to[out=180,in=0] ([xshift=-\dimexpr#2\relax,yshift=\dimexpr#3\relax]title.south west)--(frame.north west)--(frame.south west)--cycle
+}
+\@namedef{tcolorboxshape@filingbox@dl}#1#2#3{
+    (frame.north west)--(title.south west)--([xshift=-\dimexpr#1\relax]title.south east) to[out=0,in=180] ([xshift=\dimexpr#2\relax,yshift=-\dimexpr#3\relax]title.north east)--(frame.south east)--(frame.north east)--cycle
+}
+\@namedef{tcolorboxshape@filingbox@dc}#1#2#3{
+    (frame.north west)--(frame.south west)--([xshift=-\dimexpr#2\relax,yshift=-\dimexpr#3\relax]title.north west) to[out=0,in=180] ([xshift=\dimexpr#1\relax]title.south west)--([xshift=-\dimexpr#1\relax]title.south east) to[out=0,in=180] ([xshift=\dimexpr#2\relax,yshift=-\dimexpr#3\relax]title.north east)--(frame.south east)--(frame.north east)--cycle
+}
+\@namedef{tcolorboxshape@filingbox@dr}#1#2#3{
+    (frame.north east)--(title.south east)--([xshift=\dimexpr#1\relax]title.south west) to[out=180,in=0] ([xshift=-\dimexpr#2\relax,yshift=-\dimexpr#3\relax]title.north west)--(frame.south west)--(frame.north west)--cycle
+}
+\@namedef{tcolorboxshape@railingbox@ul}#1#2#3{
+    (frame.south west)--(title.north west)--([xshift=-\dimexpr#1\relax]title.north east)--([xshift=\dimexpr#2\relax,yshift=\dimexpr#3\relax]title.south east)--(frame.north east)--(frame.south east)--cycle
+}
+\@namedef{tcolorboxshape@railingbox@uc}#1#2#3{
+    (frame.south west)--(frame.north west)--([xshift=-\dimexpr#2\relax,yshift=\dimexpr#3\relax]title.south west)--([xshift=\dimexpr#1\relax]title.north west)--([xshift=-\dimexpr#1\relax]title.north east)--([xshift=\dimexpr#2\relax,yshift=\dimexpr#3\relax]title.south east)--(frame.north east)--(frame.south east)--cycle
+}
+\@namedef{tcolorboxshape@railingbox@ur}#1#2#3{
+    (frame.south east)--(title.north east)--([xshift=\dimexpr#1\relax]title.north west)--([xshift=-\dimexpr#2\relax,yshift=\dimexpr#3\relax]title.south west)--(frame.north west)--(frame.south west)--cycle
+}
+\@namedef{tcolorboxshape@railingbox@dl}#1#2#3{
+    (frame.north west)--(title.south west)--([xshift=-\dimexpr#1\relax]title.south east)--([xshift=\dimexpr#2\relax,yshift=-\dimexpr#3\relax]title.north east)--(frame.south east)--(frame.north east)--cycle
+}
+\@namedef{tcolorboxshape@railingbox@dc}#1#2#3{
+    (frame.north west)--(frame.south west)--([xshift=-\dimexpr#2\relax,yshift=-\dimexpr#3\relax]title.north west)--([xshift=\dimexpr#1\relax]title.south west)--([xshift=-\dimexpr#1\relax]title.south east)--([xshift=\dimexpr#2\relax,yshift=-\dimexpr#3\relax]title.north east)--(frame.south east)--(frame.north east)--cycle
+}
+\@namedef{tcolorboxshape@railingbox@dr}#1#2#3{
+    (frame.north east)--(title.south east)--([xshift=\dimexpr#1\relax]title.south west)--([xshift=-\dimexpr#2\relax,yshift=-\dimexpr#3\relax]title.north west)--(frame.south west)--(frame.north west)--cycle
+}
+\newcommand{\TColorBoxShape}[2]{\expandafter\ifx\csname tcolorboxshape@#1@#2\endcsname\relax
+\expandafter\@gobble\else
+\csname tcolorboxshape@#1@#2\expandafter\endcsname
+\fi}
+\makeatother
+
+\tcbset{ % Styles for filingbox, railingbox and flagbox environments
+% Adapted from https://tex.stackexchange.com/questions/587912/tcolorbox-custom-title-box-style
+filingstyle/ul/.style 2 args={
+    attach boxed title to top left={yshift=-2mm},
+    boxed title style={empty,top=0mm,bottom=1mm,left=1mm,right=0mm},
+    interior code={
+        \path[fill=#1,rounded corners] \TColorBoxShape{filingbox}{ul}{9pt}{18pt}{6pt};
+    },
+    frame code={
+        \path[draw=#2,line width=0.5mm,rounded corners] \TColorBoxShape{filingbox}{ul}{9pt}{18pt}{6pt};
+    }},
+filingstyle/uc/.style 2 args={
+    attach boxed title to top center={yshift=-2mm},
+    boxed title style={empty,top=0mm,bottom=1mm,left=0mm,right=0mm},
+    interior code={
+        \path[fill=#1,rounded corners] \TColorBoxShape{filingbox}{uc}{9pt}{18pt}{6pt};
+    },
+    frame code={
+        \path[draw=#2,line width=0.5mm,rounded corners] \TColorBoxShape{filingbox}{uc}{9pt}{18pt}{6pt};
+    }},
+filingstyle/ur/.style 2 args={
+    attach boxed title to top right={yshift=-2mm},
+    boxed title style={empty,top=0mm,bottom=1mm,left=0mm,right=1mm},
+    interior code={
+        \path[fill=#1,rounded corners] \TColorBoxShape{filingbox}{ur}{9pt}{18pt}{6pt};
+    },
+    frame code={
+        \path[draw=#2,line width=0.5mm,rounded corners] \TColorBoxShape{filingbox}{ur}{9pt}{18pt}{6pt};
+    }},
+filingstyle/dl/.style 2 args={
+    attach boxed title to bottom left={yshift=2mm},
+    boxed title style={empty,top=1mm,bottom=0mm,left=1mm,right=0mm},
+    interior code={
+        \path[fill=#1,rounded corners] \TColorBoxShape{filingbox}{dl}{9pt}{18pt}{6pt};
+    },
+    frame code={
+        \path[draw=#2,line width=0.5mm,rounded corners] \TColorBoxShape{filingbox}{dl}{9pt}{18pt}{6pt};
+    }},
+filingstyle/dc/.style 2 args={
+    attach boxed title to bottom center={yshift=2mm},
+    boxed title style={empty,top=1mm,bottom=0mm,left=0mm,right=0mm},
+    interior code={
+        \path[fill=#1,rounded corners] \TColorBoxShape{filingbox}{dc}{9pt}{18pt}{6pt};
+    },
+    frame code={
+        \path[draw=#2,line width=0.5mm,rounded corners] \TColorBoxShape{filingbox}{dc}{9pt}{18pt}{6pt};
+    }},
+filingstyle/dr/.style 2 args={
+    attach boxed title to bottom right={yshift=2mm},
+    boxed title style={empty,top=1mm,bottom=0mm,left=0mm,right=1mm},
+    interior code={
+        \path[fill=#1,rounded corners] \TColorBoxShape{filingbox}{dr}{9pt}{18pt}{6pt};
+    },
+    frame code={
+        \path[draw=#2,line width=0.5mm,rounded corners] \TColorBoxShape{filingbox}{dr}{9pt}{18pt}{6pt};
+    }},
+railingstyle/ul/.style 2 args={
+    attach boxed title to top left={yshift=-2mm},
+    boxed title style={empty,top=0mm,bottom=1mm,left=1mm,right=0mm},
+    interior code={
+        \path[fill=#1] \TColorBoxShape{railingbox}{ul}{3pt}{12pt}{6pt};
+    },
+    frame code={
+        \path[draw=#2,line width=0.5mm] \TColorBoxShape{railingbox}{ul}{3pt}{12pt}{6pt};
+    }},
+railingstyle/uc/.style 2 args={
+    attach boxed title to top center={yshift=-2mm},
+    boxed title style={empty,top=0mm,bottom=1mm,left=0mm,right=0mm},
+    interior code={
+        \path[fill=#1] \TColorBoxShape{railingbox}{uc}{3pt}{12pt}{6pt};
+    },
+    frame code={
+        \path[draw=#2,line width=0.5mm] \TColorBoxShape{railingbox}{uc}{3pt}{12pt}{6pt};
+    }},
+railingstyle/ur/.style 2 args={
+    attach boxed title to top right={yshift=-2mm},
+    boxed title style={empty,top=0mm,bottom=1mm,left=0mm,right=1mm},
+    interior code={
+        \path[fill=#1] \TColorBoxShape{railingbox}{ur}{3pt}{12pt}{6pt};
+    },
+    frame code={
+        \path[draw=#2,line width=0.5mm] \TColorBoxShape{railingbox}{ur}{3pt}{12pt}{6pt};
+    }},
+railingstyle/dl/.style 2 args={
+    attach boxed title to bottom left={yshift=2mm},
+    boxed title style={empty,top=1mm,bottom=0mm,left=1mm,right=0mm},
+    interior code={
+        \path[fill=#1] \TColorBoxShape{railingbox}{dl}{3pt}{12pt}{6pt};
+    },
+    frame code={
+        \path[draw=#2,line width=0.5mm] \TColorBoxShape{railingbox}{dl}{3pt}{12pt}{6pt};
+    }},
+railingstyle/dc/.style 2 args={
+    attach boxed title to bottom center={yshift=2mm},
+    boxed title style={empty,top=1mm,bottom=0mm,left=0mm,right=0mm},
+    interior code={
+        \path[fill=#1] \TColorBoxShape{railingbox}{dc}{3pt}{12pt}{6pt};
+    },
+    frame code={
+        \path[draw=#2,line width=0.5mm] \TColorBoxShape{railingbox}{dc}{3pt}{12pt}{6pt};
+    }},
+railingstyle/dr/.style 2 args={
+    attach boxed title to bottom right={yshift=2mm},
+    boxed title style={empty,top=1mm,bottom=0mm,left=0mm,right=1mm},
+    interior code={
+        \path[fill=#1] \TColorBoxShape{railingbox}{dr}{3pt}{12pt}{6pt};
+    },
+    frame code={
+        \path[draw=#2,line width=0.5mm] \TColorBoxShape{railingbox}{dr}{3pt}{12pt}{6pt};
+    }},
+flagstyle/ul/.style 2 args={
+    interior hidden,frame hidden,colbacktitle=#1,
+    borderline west={1pt}{0pt}{#2},
+    attach boxed title to top left={yshift=-8pt,yshifttext=-8pt},
+    boxed title style={boxsep=3pt,boxrule=1pt,colframe=#2,sharp corners,left=4pt,right=4pt},
+    bottom=0mm
+    },
+flagstyle/ur/.style 2 args={
+    interior hidden,frame hidden,colbacktitle=#1,
+    borderline east={1pt}{0pt}{#2},
+    attach boxed title to top right={yshift=-8pt,yshifttext=-8pt},
+    boxed title style={boxsep=3pt,boxrule=1pt,colframe=#2,sharp corners,left=4pt,right=4pt},
+    bottom=0mm
+    },
+flagstyle/dl/.style 2 args={
+    interior hidden,frame hidden,colbacktitle=#1,
+    borderline west={1pt}{0pt}{#2},
+    attach boxed title to bottom left={yshift=8pt,yshifttext=8pt},
+    boxed title style={boxsep=3pt,boxrule=1pt,colframe=#2,sharp corners,left=4pt,right=4pt},
+    top=0mm
+    },
+flagstyle/dr/.style 2 args={
+    interior hidden,frame hidden,colbacktitle=#1,
+    borderline east={1pt}{0pt}{#2},
+    attach boxed title to bottom right={yshift=8pt,yshifttext=8pt},
+    boxed title style={boxsep=3pt,boxrule=1pt,colframe=#2,sharp corners,left=4pt,right=4pt},
+    top=0mm
+    }
+}
+
+% Box in the shape of a filing divider, position of tab can be ul (up left), uc (up center), ur (up right), dl (down left), dc (down center) or dr (down right). Default is ul (upper left)
+\NewTColorBox{filingbox}{ D(){ul} O{black} m O{} }{enhanced,
+    top=1mm,bottom=1mm,left=1mm,right=1mm,
+    title={#3},
+    fonttitle=\sffamily\bfseries,
+    coltitle=black,
+    filingstyle/#1={#2!10}{#2},
+    #4
+}
+
+% Box in the shape of a railing bar, position of tab can be ul (up left), uc (up center), ur (up right), dl (down left), dc (down center) or dr (down right). Default is ul (upper left)
+\NewTColorBox{railingbox}{ D(){ul} O{black} m O{} }{enhanced,
+    top=1mm,bottom=1mm,left=1mm,right=1mm,
+    title={#3},
+    fonttitle=\sffamily\bfseries,
+    coltitle=black,
+    railingstyle/#1={#2!10}{#2},
+    #4
+}
+
+% Box in the shape of a flag, position of tab can be ul (up left), ur (up right), dl (down left) or dr (down right). Default is ul (upper left)
+\NewTColorBox{flagbox}{ D(){ul} O{black} m O{} }{enhanced,breakable,
+    top=1mm,bottom=1mm,left=1mm,right=1mm,
+    title={#3},
+    fonttitle=\sffamily\bfseries,
+    coltitle=black,
+    flagstyle/#1={#2!10}{#2},
+    #4
+}
+
+\makeatletter
+\newcommand*{\CreateSmartLargeOperator}[2]{
+% Adapted from https://tex.stackexchange.com/questions/61598/new-command-with-cases-conditionals-if-thens/61600
+    % Plain operator (no customization)
+    \csdef{LargeOperator@#1@}{\csdef{LargeOperator@#1@Symbol}{\csuse{#1}}}
+    % Operator with limits above and below symbol
+    \csdef{LargeOperator@#1@l}{\csdef{LargeOperator@#1@Symbol}{\csuse{#1}\limits}}
+    % Operato with limits beside symbol
+    \csdef{LargeOperator@#1@n}{\csdef{LargeOperator@#1@Symbol}{\csuse{#1}\nolimits}}
+    % Inline style operator
+    \csdef{LargeOperator@#1@i}{\csdef{LargeOperator@#1@Symbol}{\textstyle\csuse{#1}}}
+    % Display style operator
+    \csdef{LargeOperator@#1@d}{\csdef{LargeOperator@#1@Symbol}{\displaystyle\csuse{#1}}}
+    % Inline style operator with limits above and below symbol
+    \csdef{LargeOperator@#1@il}{\csdef{LargeOperator@#1@Symbol}{\textstyle\csuse{#1}\limits}}
+    % Inline style operator with limits beside symbol
+    \csdef{LargeOperator@#1@in}{\csdef{LargeOperator@#1@Symbol}{\textstyle\csuse{#1}\nolimits}}
+    % Display style operator with limits above and below symbol
+    \csdef{LargeOperator@#1@dl}{\csdef{LargeOperator@#1@Symbol}{\displaystyle\csuse{#1}\limits}}
+    % Display style operator with limits beside symbol
+    \csdef{LargeOperator@#1@dn}{\csdef{LargeOperator@#1@Symbol}{\displaystyle\csuse{#1}\nolimits}}
+
+% NOTE: In the command below, ##1 denotes the operator. It is NOT to be used as an argument!
+\def\LargeOperatorSpecs@i##1,##2,##3,##4,##5,##6,##7\@nil{
+% If no arguments, operate over n from 1 to infinity
+    \ifx$##2$\csuse{LargeOperator@##1@Symbol}_{n=1}^{\infty}\else
+    % If one argument, operate over n from ##2 to infinity
+        \ifx$##3$\csuse{LargeOperator@##1@Symbol}_{n=##2}^{\infty}\else
+        % If two arguments, operate over n from ##2 to ##3
+            \ifx$##4$\csuse{LargeOperator@##1@Symbol}_{n=##2}^{##3}\else
+            % If three arguments, operate over ##2 from ##3 to ##4
+                \ifx$##5$\csuse{LargeOperator@##1@Symbol}_{##2=##3}^{##4}\else
+                % If four arguments, operate over ##2 and ##3 from ##4 to ##5
+                    \ifx$##6$\csuse{LargeOperator@##1@Symbol}_{##2,##3=##4}^{##5}\else
+                    % If five arguments, operate over ##2, ##3 and ##4 from ##5 to ##6
+                        \csuse{LargeOperator@##1@Symbol}_{##2,##3,##4=##5}^{##6}
+                    \fi
+                \fi
+            \fi
+        \fi
+    \fi
+}
+
+% Flexible "smart" large operator macro with comma-separated arguments and optional argument for formatting. Default is over n from 1 to infinity. Adapted from https://tex.stackexchange.com/a/15722
+\expandafter\DeclareDocumentCommand\csname#2\endcsname{ O{} m }{ % New operator macro
+\bgroup % Group created to keep operator style (e.g. \limits) local
+    \expandafter\ifx\csname LargeOperator@#1@##1\endcsname\relax
+    \expandafter\@gobble\else
+    \csname LargeOperator@#1@##1\expandafter\endcsname
+    \fi
+    \expandafter\LargeOperatorSpecs@i#1,##2,,,,,\@nil% % #1 stands in for the first "argument" of \LargeOperatorSpecs@i (the operator), the actual arguments are from ##2 onward
+\egroup}
+}
+\makeatother
+
+% Create the smart large operator #2 based on the large operator #1. For example, \CreateSmartLargeOperator{sum}{Sum} will define \Sum as the smart large operator based on \sum
+% Equivalent Unicode characters are given here (but they are NOT the same as the operators)
+\CreateSmartLargeOperator{sum}{Sum}             % Large: U+2211 ∑ (no small version)
+\CreateSmartLargeOperator{prod}{Prod}           % Small: U+2293 ⊓, Large: U+220F ∏
+\CreateSmartLargeOperator{coprod}{Coprod}       % Small: U+2294 ⊔, Large: U+2210 ∐
+\CreateSmartLargeOperator{bigcap}{Capp}         % Small: U+2229 ∩, Large: U+22C2 ⋂
+\CreateSmartLargeOperator{bigcup}{Cupp}         % Small: U+222A ∪, Large: U+22C3 ⋃
+\CreateSmartLargeOperator{bigsqcup}{Kupp}       % Small: U+2294 ⊔, Large: U+2210 ∐
+\CreateSmartLargeOperator{bigodot}{Odot}        % Small: U+2299 ⊙ (no large version)
+\CreateSmartLargeOperator{bigoplus}{Oplus}      % Small: U+2295 ⊕ (no large version)
+\CreateSmartLargeOperator{bigotimes}{Otimes}    % Small: U+2297 ⊗ (no large version)
+\CreateSmartLargeOperator{biguplus}{Uplus}      % Small: U+228E ⊎ (no large version)
+\CreateSmartLargeOperator{bigwedge}{Wedge}      % Small: U+2227 ∧, Large: U+22C0 ⋀
+\CreateSmartLargeOperator{bigvee}{Vee}          % Small: U+2228 ∨, Large: U+22C1 ⋁
+
+\tcolorboxenvironment{proof}{boxrule=0pt,boxsep=0pt,blanker,
+    borderline west={2pt}{0pt}{tcol_PRF},left=8pt,right=8pt,sharp corners,
+    before skip=10pt,after skip=10pt,breakable
+}
+\tcolorboxenvironment{remark}{boxrule=0pt,boxsep=0pt,blanker,
+    borderline west={2pt}{0pt}{tcol_REM},left=8pt,right=8pt,
+    before skip=10pt,after skip=10pt,breakable
+}
+\tcolorboxenvironment{remarks}{boxrule=0pt,boxsep=0pt,blanker,
+    borderline west={2pt}{0pt}{tcol_REM},left=8pt,right=8pt,
+    before skip=10pt,after skip=10pt,breakable
+}
+\tcolorboxenvironment{example}{boxrule=0pt,boxsep=0pt,blanker,
+    borderline west={2pt}{0pt}{tcol_EXA},left=8pt,right=8pt,sharp corners,
+    before skip=10pt,after skip=10pt,breakable
+}
+\tcolorboxenvironment{examples}{boxrule=0pt,boxsep=0pt,blanker,
+    borderline west={2pt}{0pt}{tcol_EXA},left=8pt,right=8pt,sharp corners,
+    before skip=10pt,after skip=10pt,breakable
+}
+
+% align and align* environments with inline size
+\newenvironment{talign}{\let\displaystyle\textstyle\align}{\endalign}
+\newenvironment{talign*}{\let\displaystyle\textstyle\csname align*\endcsname}{\endalign}
+
+\usepackage[explicit]{titlesec}
+% Setting the format for sections, subsections and subsubsections
+\titleformat{\section}{\fontsize{24}{30}\sffamily\bfseries}{\thesection}{20pt}{#1}
+\titleformat{\subsection}{\fontsize{16}{18}\sffamily\bfseries}{\thesubsection}{12pt}{#1}
+\titleformat{\subsubsection}{\fontsize{10}{12}\sffamily\large\bfseries}{\thesubsubsection}{8pt}{#1}
+% Setting the spacing for sections, subsections and subsubsections
+% First argument is the left indent, second argument is the spacing above, third argument is the spacing below
+\titlespacing*{\section}{0pt}{5pt}{10pt}
+\titlespacing*{\subsection}{0pt}{25pt}{10pt}
+\titlespacing*{\subsubsection}{0pt}{5pt}{5pt}
+
+\newcommand{\Disp}{\displaystyle}
+\newcommand{\qe}{\hfill\(\bigtriangledown\)}
+\DeclareMathAlphabet\mathbfcal{OMS}{cmsy}{b}{n}
+\setlength{\parindent}{0in}
+\setlength{\parskip}{0pt}
+\setlength{\columnseprule}{0pt}
+
+\makeatletter
+% Modify spacing above and below display equations
+\g@addto@macro\normalsize{
+    \setlength\abovedisplayskip{3pt}
+    \setlength\belowdisplayskip{3pt}
+    \setlength\abovedisplayshortskip{0pt}
+    \setlength\belowdisplayshortskip{0pt}
+}
+\makeatother
+
+\makeatletter
+% Redefining the title block
+\renewcommand\maketitle{
+\null % \vspace does not work with nothing above it, so \null is added
+\vspace{5mm}
+\begingroup % Creating a group to ensure col_stripes is only defined locally, i.e. only for the title
+\definecolor{col_stripes}{HTML}{1B0982} % Color of the stripes above and below the title components
+    \begin{tcolorbox}[enhanced,blanker,
+    borderline horizontal={2pt}{0pt}{col_stripes},
+    borderline horizontal={1pt}{-3.5pt}{col_stripes},
+    borderline horizontal={2pt}{-8pt}{col_stripes},
+    fontupper=\fontfamily{bch},
+    halign=flush center,top=10mm,bottom=10mm,after skip=20mm,
+    ]
+        {\fontsize{24}{28}\bfseries\selectfont\@title}\\
+            \vspace{6mm}
+        {\fontsize{20}{24}\selectfont\@author}\\
+            \vspace{6mm}
+        {\fontsize{16}{20}\selectfont\@date}
+    \end{tcolorbox}
+\endgroup}
+% Adapted from https://tex.stackexchange.com/questions/483953/how-to-add-new-macros-like-author-without-editing-latex-ltx?noredirect=1&lq=1
+\makeatother
+
+\title{Modellierung eines Schiffskurses}
+\author{Dennis L. Buchholz}
+\date{\today} % Replace with \today to show the current date
+
+\begin{document}
+
+\maketitle
+
+\definecolor{svlfggreen}{HTML}{68B42E}
+\definecolor{svlfgdarkgreen}{HTML}{117931}
+\definecolor{darkgreen}{HTML}{107206}
+
+\definecolor{tcol_CNT1}{HTML}{72E094} % First color for Contents
+\definecolor{tcol_CNT2}{HTML}{24E2D6} % Second color for Contents
+\definecolor{tcol_CNV1}{HTML}{8E44AD} % First color for Conventions
+\definecolor{tcol_CNV2}{HTML}{A10B49} % First color for Conventions
+
+\begin{tcolorbox}[enhanced,
+    title=Einleitung,
+    fonttitle=\fontsize{20}{24}\sffamily\bfseries\selectfont,
+    coltitle=black,
+    fontupper=\sffamily,
+    interior style={left color=tcol_CNT1!80,right color=tcol_CNT2!80},
+    frame style={left color=tcol_CNT1!60!black,right color=tcol_CNT2!60!black},
+    attach boxed title to top center={yshift=10pt},
+    boxed title style={frame hidden,
+        interior style={left color=tcol_CNT1,right color=tcol_CNT2},
+        frame style={left color=tcol_CNT1!60!black,right color=tcol_CNT2!60!black},
+        height=24pt,bean arc,drop fuzzy shadow
+    },
+    top=2mm,bottom=2mm,left=2mm,right=2mm,
+    before skip=20mm,after skip=20mm,
+    drop fuzzy shadow,breakable]
+%
+Es soll ein Simulationsprogramm in den Programmiersprachen C und Python implementiert werden, welches ein Szenario
+modelliert, in dem ein Handelsschiff mit konstanter Geschwindigkeit segelt und von einem Piratenschiff verfolgt wird.
+Das Ziel des Programms ist es, den Zeitpunkt (th0) sowie die kartesische Y-Koordinate (yh0) des Treffpunkts der beiden
+Schiffe zu berechnen.
+\end{tcolorbox}
+
+\begin{filingbox}[teal]{Beispielgrafik}
+\begin{align*}
+\includegraphics[width=10cm]{ships.png}
+\end{align}
+\begin{align}
+\text{Graphische Ausgabe des beiliegenden Programms}
+\end{align}
+\end{filingbox}
+
+
+\begin{tcolorbox}[enhanced,
+    frame hidden,
+    title=Technische Hinweise,
+    fonttitle=\large\sffamily\bfseries\selectfont,
+    interior code={
+        \shade[top color=tcol_CNV2!50,bottom color=white] ([yshift=2mm]interior.north west) arc(-180:-90:2mm)--(interior.north east)--(interior.south east)--(interior.south west)--cycle;
+        },
+    overlay={
+        \draw[tcol_CNV1!50!black,line width=0.5mm] ([xshift=2mm]frame.north west)--(frame.north east);
+    },
+    boxrule=0pt,left=2pt,right=2pt,
+    sharp corners=north,
+    attach boxed title to top left,
+    boxed title style={interior hidden,
+    left=1mm,right=1mm,
+    frame code={
+        \path[draw=tcol_CNV1!50!black,line width=0.5mm,fill=tcol_CNV1,rounded corners=2mm] ([xshift=2mm]frame.south east)--(frame.south east)--(frame.north east)--([xshift=0.25mm]frame.north west)--([xshift=0.25mm]frame.south west)--cycle;}
+    },
+    top=2mm,bottom=2mm,left=2mm,right=2mm,
+    before skip=10mm,after skip=10mm]
+%
+Für die Kompilierung und das Testen des C-Quelltexts wurde der Compiler \textbf{gcc} in Version 9.2.0, GNU \textbf{make} in
+Version 3.82.90 und GNU \textbf{ld} (binutils 2.32) aus MinGW genutzt. Für den Python-Quelltext wurde
+\textbf{cpython} 3.10.9 mit den Bibliotheken \texttt{matplotlib} und \texttt{numpy} verwendet.
+
+Zur Erstellung der Dokumentation kam \textbf{texify} von MiKTeX in Version 22.8.28 zum Einsatz.
+\end{tcolorbox}
+
+\newpage
+
+\section{Allgemeine Struktur des Programms}
+
+In diesem Abschnitt werden die verwendeten Datenstrukturen und mathematischen Konzepte beschrieben.
+
+\subsection{Datenstrukturen}
+
+Für das Programm werden folgende zwei Datenstrukturen definiert:
+
+\begin{twoboxes}{
+\begin{lstlisting}
+@dataclass
+class Point:
+    x: float
+    y: float
+\end{lstlisting}
+\tcblower
+Eine Datenstruktur, welche einen Punkt auf einem kartesischen Graphen mit einer X- und Y-Koordinate repräsentiert.
+\end{twoboxes}
+
+\begin{twoboxes}{
+\begin{lstlisting}
+@dataclass
+class Result:
+    th0: float
+    yh0: float
+\end{lstlisting}
+\tcblower
+Eine Datenstruktur, welche die geforderten Werte th0 und yh0 zusammenfasst.
+\end{twoboxes}
+
+
+\subsection{Mathematische Theorie}
+
+Die Berechnung in den beiliegenden Programmen basiert auf der in der Aufgabe gegebenen Tabelle:
+\begin{align*}
+\includegraphics[width=16cm]{table.png}
+\end{align}
+
+Der Wert \textepsilon \, ist der Abstand zwischen den Schiffen, der mindestens erreicht werden muss, um th0 und yh0 zu bestimmen.
+$\Delta t$ repräsentiert jeweils einen Zeitabschnitt in der Simulation. Beide Werte sollten jeweils klein gewählt werden,
+um th0 und yh0 möglichst genau zu bestimmen. Um eine mathematisch exakte Bestimmung zu erzielen, müsste der Grenzwert
+beider Werte ermittelt werden:
+
+\begin{lemma}{}{square}
+\begin{equation*}
+\lim_{\epsilon\to0}
+\end{equation*}
+\\
+\begin{equation*}
+\lim_{\Delta t\to0
+\end{equation*}
+\end{lemma}
+
+Um den Wert \textphi \, auszurechnen (im folgenden Programmcode \textit{distance} genannt), wird die Arkustangensfunktion verwendet.
+Die Arkustangensfunktion, dargestellt durch $\operatorname{atan}(x)$ oder $\tan^{-1}(x)$, ist eine Funktion, die als
+Eingabe eine reelle Zahl $x$ annimmt und ihren Winkel in Bogenmaß zurückgibt, dessen Tangens gleich $x$ ist.
+Mit anderen Worten, wenn $y = \operatorname{atan}(x)$, dann gilt $\tan(y) = x$, wobei $x$ eine reelle Zahl und $y$ der
+entsprechende Winkel in Bogenmaß ist.
+
+Der Definitionsbereich der Funktion $\operatorname{atan}$ umfasst alle reellen Zahlen, aber ihr Wertebereich ist
+auf das Intervall $\left(-\frac{\pi}{2}, \frac{\pi}{2}\right)$, oder etwa $\left(-1.57, 1.57\right)$ in Bogenmaß, begrenzt.
+Dies bedeutet, dass der Ausgabewert der Funktion $\operatorname{atan}$ unabhängig vom Eingabewert immer eine Zahl
+zwischen $-\frac{\pi}{2}$ und $\frac{\pi}{2}$ ist. Daher wird im Falle eines Fehlers, bei dem der Divisor 0 ist, die
+Rückgabe der Funktion $\operatorname{atan}$ als $\frac{\pi}{2}$ definiert.
+
+\pagebreak
+\subsection{Implementation der Rechenschritte}
+
+Die Berechnung des Schiffskurses wird folgendermaßen in Python implementiert:
+\begin{lstlisting}
+@tail_recursive
+def approx_p_course(k, t: float, delta_t, pos_h: Point, pos_p: Point, angle, delta_x, delta_y, epsilon):
+\end{lstlisting}
+
+\textit{N} wird als die Konstante 3/4 definiert. \textit{delta\_t} und \textit{epsilon} werden als feste, aber beliebig kleine, reelle Zahlen angenommen.
+Daraus ergeben sich folgende Rechenschritte analog zu den Rechenschritten der Tabelle:
+
+\begin{twoboxes}{
+\begin{lstlisting}
+pos_h.y = k * N * delta_t
+\end{lstlisting}
+\tcblower
+Die Y-Koordinate des Handelsschiffes ist das Produkt aus der Multiplikation,
+des Iterators k, der Konstante N und der Variable \textit{delta\_t}.
+\end{twoboxes}
+
+\begin{twoboxes}{
+\begin{lstlisting}
+t = k * delta_t
+\end{lstlisting}
+\tcblower
+Die aktuelle Zeit berechnet sich aus dem Produkt des Iterators und der Variable \textit{delta\_t}.
+\end{twoboxes}
+
+\begin{twoboxes}{
+\begin{lstlisting}
+try:
+    distance = (pos_h.y - pos_p.y) / (1 - pos_p.x)
+except ZeroDivisionError:
+    distance = numpy.pi / 2\end{lstlisting}
+\tcblower
+Es sei \textit{distance} ein Quotient, bei welchem der Dividend die Differenz der Y-Koordinaten der beiden Schiffe ist und der
+Divisor die Differenz der beiden X-Koordinaten. Da die X-Koordinate des Handelsschiffes konstant ist, bedarf sie keiner
+Variable. \\ Es ist zu beachten, dass in diesem Rechenschritt ein Fehler auftreten kann, wenn der Divisor 0 wird.
+Dies geschieht, wenn die X-Koordinate des Piratenschiffes den Wert 1 annimmt. Um diesen Fehler zu behandeln, wird in diesem
+Fall \textit{distance} als pi/2 definiert.
+\end{twoboxes}
+
+\begin{twoboxes}{
+\begin{lstlisting}
+pos_p.x += delta_x
+pos_p.y += delta_y
+
+if pos_p.x > pos_h.x + 1:
+    print("Distance is never below given epsilon threshold!")
+    return None\end{lstlisting}
+\tcblower
+Die Koordinaten des Piratenschiffes werden jeweils um das \textit{delta\_x} und \textit{delta\_y} der aktuellen Iteration erhöht.
+Des  Weiteren wird der Fall überprüft, ob die X-Koordinate des Piratenschiffes bereits größer als die X-Koordinate + 1 sei.
+Hiermit wird überprüft, ob das Piratenschiff das Handelsschiff bereits überholt habe. Ist dies der Fall, so ist niemals
+der zu erreichende Schwellwert \textit{epsilon} erreicht und die Simulation muss mit einer Fehlermeldung beendet werden. Dieser
+Fall muss überprüft werden, da die Abbruchbedingung (\textit{epsilon}) in diesem Fall sonst nie erreicht werde.
+\end{twoboxes}
+
+\begin{twoboxes}{
+\begin{lstlisting}
+angle = numpy.arctan(distance)
+delta_x = delta_t * numpy.cos(angle)
+delta_y = delta_t * numpy.sin(angle)\end{lstlisting}
+\tcblower
+Die Arkurstangensfunktion wird verwendet, um den Winkel (\textit{angle}) zwischen den beiden Schiffen zu berechnen.
+Dabei wird die Variable \textit{distance} als Parameter in die Funktion eingesetzt.
+
+Um den Wert der Variable \textit{delta\_x} zu berechnen, wird das Produkt aus \textit{delta\_t} und der Kosinusfunktion
+des Winkels (\textit{angle}) verwendet. Hierfür wird der Winkel als Parameter in die Kosinusfunktion eingesetzt. Analog
+dazu wird der Wert der Variable berechnet, \textit{delta\_x} berechnet, jedoch wird die Sinusfunktion anstelle der
+Kosinusfunktion verwendet.
+\end{twoboxes}
+
+\begin{twoboxes}{
+\begin{lstlisting}
+if (abs(pos_h.x - pos_p.x) < epsilon) and (abs(pos_h.y - pos_p.y) < epsilon):
+    result.th0 = t
+    result.yh0 = pos_h.y
+else:
+    approx_p_course(k+1, t, delta_t, pos_h, pos_p, angle, delta_x, delta_y, epsilon)
+\end{lstlisting}
+\tcblower
+Ist sowohl der Betrag der Differenz der X-Koordinaten kleiner als der Schwellwert \textit{epsilon}, als auch der Betrag der
+Differenz der Y-Koordinaten kleiner als der Schwellwert \textit{epsilon}, dann sei die Abbruchbedingung erreicht, und die
+gesuchten Werte \textit{th0} und \textit{yh0} ergeben sich aus der Variable t und der aktuellen Y-Koordinate des Handelsschiffes.
+\end{twoboxes}
+\pagebreak
+\section{Auswertung der Ergebnisse}
+
+\begin{proposition}{Rekursive Python-Variante}{diffcont}
+\begin{align*}
+\includegraphics[width=15cm]{example1.png}
+\end{align}
+\begin{align*}
+\text{Beispieleingabe in das beiliegende Programm, \[\textit{delta\_t} = 0.04, \textit{epsilon} = 0.15\]}
+\end{align}
+
+\begin{align*}
+\includegraphics[width=15cm]{ships.png}
+\end{align}
+\begin{align*}
+\text{Graphische Ausgabe (\[th0=1.76, yh0=1.32\])}
+\end{align}
+
+\end{proposition}
+
+\begin{filingbox}[red]{Bemerkung}
+Im vorliegenden Python-Code zur Berechnung des Schiffskurses wird eine endrekursivse Funktion verwendet,
+anstelle einer iterativen Funktion. Obwohl endrekursive Funktionen oft als effizienter gelten, führt die Verwendung in
+diesem Fall zu Einschränkungen im Definitionsbereich der Funktion. Insbesondere lassen sich die Parameter \textit{epsilon} und
+\textit{delta\_t} nicht hinreichend klein wählen, da ab einer gewissen Rekursionstiefe die Grenze des Stack-Speichers
+erreicht wird.
+
+Daher ist es ratsam, für eine Python-Implementierung eine iterative Variante zu verwenden um Seiteneffekte zu vermeiden
+und ein möglichst genaues Ergebnis zu erhalten. Die C-Implementierung hingegen weist diesen Seiteneffekt nicht auf,
+da der C Compiler die Endrekursion optimiert.
+\end{filingbox}
+
+\begin{proposition}{Rekursive C-Variante (genaueres Ergebnis)}{diffcont}
+\begin{align*}
+\includegraphics[width=15cm]{example2.png}
+\end{align}
+\begin{align*}
+\text{Beispieleingabe in das beiliegende Programm (\[\textit{delta\_t} = 0.000001, \textit{epsilon} = 0.000005\])}
+\end{align}
+
+Mit der C-Implementierung wird ein hinreichend genaues Ergebnis erzielt.
+
+\end{proposition}
+
+\pagebreak
+
+\end{document}
